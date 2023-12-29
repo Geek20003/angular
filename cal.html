@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    .app {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin-top: 100px;
+    }
+    .rows {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    .btn {
+      width: 60px;
+      height: 40px;
+      margin: 10px;
+      background-color: rgba(6, 10, 15, 0.545);
+      border-radius: 20px;
+      border-color: aliceblue;
+      border-style: hidden;
+      text-align: center;
+      color: white;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    input {
+      width: 100%;
+      height: 60px;
+      text-align: right;
+      font-size: 25px;
+      padding: 9px;
+      border-radius: 10px;
+      
+    }
+    .board {
+      background-color: rgb(23, 50, 65);
+      border: 3;
+      border-color: rgb(20, 20, 30);
+      margin-top: 5px;
+    }
+    .cal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-style: solid;
+      border-color: rgb(54, 65, 71);
+      padding: 10px;
+      background: rgb(2, 15, 44);
+      border-radius: 10px;
+    }
+  </style>
+  <script>
+    var calci = angular.module("calci", []);
+    calci.controller("ctrl", function ($scope) {
+      $scope.compute = function (number) {
+       
+        const element = document.getElementById("display");
+        if (number && !element.disabled) {
+            new Audio('./click.mp3').play();
+          if ($scope.display) {
+            
+            switch (number) {
+              case "c":
+                $scope.display = "";
+                break;
+              case "d":
+                console.log(typeof $scope.display);
+                const len = String($scope.display).length;
+                $scope.display = String($scope.display).slice(0, len - 1);
+                break;
+              case "on":
+                $scope.display = "";
+               
+                break;
+              case "off":
+                $scope.display = "";
+                element.disabled = true;
+                new Audio('./alert.mp3').play();
+                break;
+              case "=":
+              try{
+                $scope.display = eval($scope.display).toString();
+                new Audio('./equal.mp3').play();
+            }catch(e){
+                $scope.display = "Error"
+                new Audio('./error.mp3').play();
+                };
+                break;
+              default:
+                $scope.display += String(number);
+            }
+          } else {
+            switch (number) {
+              case "c":
+                $scope.display = "";
+                break;
+              case "d":
+                console.log(typeof $scope.display);
+                const len = String($scope.display).length;
+                $scope.display = String($scope.display).slice(0, len - 1);
+                break;
+              case "on":
+                $scope.display = "";
+               
+                break;
+              case "off":
+                $scope.display = "";
+                element.disabled = true;
+                new Audio('./alert.mp3').play();
+                break;
+              case "=":
+             
+                $scope.display = "Error"
+                new Audio('./error.mp3').play();
+                break;
+              default:
+                $scope.display = String(number);
+            }
+          }
+        }
+        else if (number == "on") {
+        new Audio('./click.mp3').play();
+        new Audio('./alert.mp3').play();
+          element.disabled = false;
+        }
+      };
+    });
+  </script>
+  <body>
+  
+    <div class="app" ng-app="calci" ng-controller="ctrl">
+      <div class="cal">
+        <input id="display" type="text" ng-model="display" />
+        <div class="board">
+          <div class="rows">
+            <button ng-click="compute('c')" class="btn">C</button>
+            <button class="btn" ng-click="compute('d')">D</button>
+            <button class="btn" ng-click="compute('off')">OFF</button>
+            <button class="btn" ng-click="compute('on')">ON</button>
+          </div>
+          <div class="rows">
+            <button class="btn" ng-click="compute(7)">7</button>
+            <button class="btn" ng-click="compute(8)">8</button>
+            <button class="btn" ng-click="compute(9)">9</button>
+            <button class="btn" ng-click="compute('+')">+</button>
+          </div>
+          <div class="rows">
+            <button class="btn" ng-click="compute(4)">4</button>
+            <button class="btn" ng-click="compute(5)">5</button>
+            <button class="btn" ng-click="compute(6)">6</button>
+            <button class="btn" ng-click="compute('-')">-</button>
+          </div>
+          <div class="rows">
+            <button class="btn" ng-click="compute('1')">1</button>
+            <button class="btn" ng-click="compute(2)">2</button>
+            <button class="btn" ng-click="compute(3)">3</button>
+            <button class="btn" ng-click="compute('*')">&times;</button>
+          </div>
+          <div class="rows">
+            <button class="btn" ng-click="compute('0')">0</button>
+            <button class="btn" ng-click="compute('00')">00</button>
+            <button class="btn" ng-click="compute('.')">  &#x2022</button>
+            <button class="btn" ng-click="compute('/')">/</button>
+          </div>
+          <div class="rows">
+            <button style="width: 100%;height: 50px;font-size: 30px;" class="btn" ng-click="compute('=')">&#x23CE;</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
