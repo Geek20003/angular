@@ -7,6 +7,10 @@
       margin: 0;
       box-sizing: border-box;
     }
+    @font-face {
+      font-family: "segmented";
+      src: url('./calciFont.ttf') format('truetype');
+    }
     .app {
       display: flex;
       flex-direction: row;
@@ -34,7 +38,18 @@
       color: white;
       cursor: pointer;
       font-size: 20px;
+      border-style:groove;
+      box-sizing: content-box;
+      
     }
+    .clicked {
+  transform: scale(0.95);
+  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transform: scale(0.96);
+  
+}
+
     input {
       width: 100%;
       height: 60px;
@@ -42,7 +57,13 @@
       font-size: 25px;
       padding: 9px;
       border-radius: 10px;
-      
+      background-color: black;
+      color: orange;
+      font-family: segmented;
+    }
+    input:focus{
+     
+      outline: lightskyblue;
     }
     .board {
       background-color: rgb(23, 50, 65);
@@ -65,10 +86,12 @@
     var calci = angular.module("calci", []);
     calci.controller("ctrl", function ($scope) {
       $scope.compute = function (number) {
-       
+        $scope.isClicked = null;
         const element = document.getElementById("display");
         if (number && !element.disabled) {
             new Audio('./click.mp3').play();
+            element.style.borderColor = "lightskyblue";
+            $scope.isClicked = number;
           if ($scope.display) {
             
             switch (number) {
@@ -119,6 +142,7 @@
                 $scope.display = "";
                 element.disabled = true;
                 new Audio('./alert.mp3').play();
+                element.style.borderColor = "black";
                 break;
               case "=":
              
@@ -133,7 +157,12 @@
         else if (number == "on") {
         new Audio('./click.mp3').play();
         new Audio('./alert.mp3').play();
+        element.style.borderColor = "lightskyblue";
           element.disabled = false;
+          $scope.isClicked = number;
+          
+        }else{
+          $scope.isClicked = null;
         }
       };
     });
@@ -141,41 +170,42 @@
   <body>
   
     <div class="app" ng-app="calci" ng-controller="ctrl">
+      
       <div class="cal">
-        <input id="display" type="text" ng-model="display" />
+        <input id="display" disabled type="text" ng-model="display" />
         <div class="board">
           <div class="rows">
-            <button ng-click="compute('c')" class="btn">C</button>
-            <button class="btn" ng-click="compute('d')">D</button>
-            <button class="btn" ng-click="compute('off')">OFF</button>
-            <button class="btn" ng-click="compute('on')">ON</button>
+            <button ng-click="compute('c')" class="btn" ng-class="{'clicked': isClicked==='c'}">C</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='d'}" ng-click="compute('d')">D</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='off'}" ng-click="compute('off')">OFF</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='on'}" ng-click="compute('on')">ON</button>
           </div>
           <div class="rows">
-            <button class="btn" ng-click="compute(7)">7</button>
-            <button class="btn" ng-click="compute(8)">8</button>
-            <button class="btn" ng-click="compute(9)">9</button>
-            <button class="btn" ng-click="compute('+')">+</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='7'}"  ng-click="compute('7')">7</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='8'}" ng-click="compute('8')">8</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='9'}" ng-click="compute('9')">9</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='+'}" ng-click="compute('+')">+</button>
           </div>
           <div class="rows">
-            <button class="btn" ng-click="compute(4)">4</button>
-            <button class="btn" ng-click="compute(5)">5</button>
-            <button class="btn" ng-click="compute(6)">6</button>
-            <button class="btn" ng-click="compute('-')">-</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='4'}" ng-click="compute('4')">4</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='5'}" ng-click="compute('5')">5</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='6'}" ng-click="compute('6')">6</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='-'}" ng-click="compute('-')">-</button>
           </div>
           <div class="rows">
-            <button class="btn" ng-click="compute('1')">1</button>
-            <button class="btn" ng-click="compute(2)">2</button>
-            <button class="btn" ng-click="compute(3)">3</button>
-            <button class="btn" ng-click="compute('*')">&times;</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='1'}" ng-click="compute('1')">1</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='2'}" ng-click="compute('2')">2</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='3'}" ng-click="compute('3')">3</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='*'}" ng-click="compute('*')">&times;</button>
           </div>
           <div class="rows">
-            <button class="btn" ng-click="compute('0')">0</button>
-            <button class="btn" ng-click="compute('00')">00</button>
-            <button class="btn" ng-click="compute('.')">  &#x2022</button>
-            <button class="btn" ng-click="compute('/')">/</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='0'}" ng-click="compute('0')">0</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='00'}" ng-click="compute('00')">00</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='.'}" ng-click="compute('.')">  &#x2022</button>
+            <button class="btn" ng-class="{'clicked': isClicked==='/'}" ng-click="compute('/')">/</button>
           </div>
           <div class="rows">
-            <button style="width: 100%;height: 50px;font-size: 30px;" class="btn" ng-click="compute('=')">&#x23CE;</button>
+            <button style=" width: 100%;height: 50px;font-size: 30px;" class="btn" ng-class="{'clicked': isClicked==='='}" ng-click="compute('=')">&#x23CE;</button>
           </div>
 
         </div>
